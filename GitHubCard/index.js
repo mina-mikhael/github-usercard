@@ -1,3 +1,5 @@
+import axios from "axios";
+
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
@@ -28,7 +30,7 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = ["tetondan", "dustinmyers", "justsml", "luishrd", "keirankozlowski"];
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -50,6 +52,68 @@ const followersArray = [];
     </div>
 */
 
+function cardMaker(objData) {
+  //crearting the nodes
+  const cardDiv = document.createElement("div");
+  cardDiv.classList.add("card");
+
+  const image = document.createElement("img");
+  image.src = objData.avatar_url;
+
+  const cardInfoDiv = document.createElement("div");
+  cardInfoDiv.classList.add("card-info");
+
+  const cardTitle = document.createElement("h3");
+  cardTitle.classList.add("name");
+  cardTitle.textContent = objData.name;
+
+  const userName = document.createElement("p");
+  userName.classList.add("username");
+  userName.textContent = `User Name: ${objData.login}`;
+
+  const location = document.createElement("p");
+  location.textContent = `Location: ${objData.location}`;
+
+  const profile = document.createElement("p");
+  const profileLink = document.createElement("a");
+  profileLink.href = objData.html_url;
+  profileLink.textContent = `GitHub: ${objData.html_url}`;
+
+  const followers = document.createElement("p");
+  followers.textContent = `Followers: ${objData.followers}`;
+
+  const following = document.createElement("p");
+  following.textContent = `Following: ${objData.following}`;
+
+  const bio = document.createElement("p");
+  bio.textContent = `Bio: ${objData.bio}`;
+
+  // appending childs to it's parents
+  cardDiv.appendChild(image);
+  cardDiv.appendChild(cardInfoDiv);
+  cardInfoDiv.appendChild(cardTitle);
+  cardInfoDiv.appendChild(userName);
+  cardInfoDiv.appendChild(location);
+  cardInfoDiv.appendChild(profile);
+  profile.appendChild(profileLink);
+  cardInfoDiv.appendChild(followers);
+  cardInfoDiv.appendChild(following);
+  cardInfoDiv.appendChild(bio);
+
+  return cardDiv;
+}
+
+axios.get("https://api.github.com/users/mina-mikhael").then((res) => {
+  document.querySelector(".cards").appendChild(cardMaker(res.data));
+});
+
+setTimeout(() => {
+  followersArray.forEach((string) => {
+    axios.get(`https://api.github.com/users/${string}`).then((res) => {
+      document.querySelector(".cards").appendChild(cardMaker(res.data));
+    });
+  });
+}, 200);
 /*
   List of LS Instructors Github username's:
     tetondan
